@@ -1,8 +1,6 @@
 use std::ops::IndexMut;
 use super::group::Group;
-
-/// Represents a position within a sudoku puzzle
-pub type Position = (usize, usize);
+use super::position::Position;
 
 /// Trait providing a generic interface for sudoku puzzles
 pub trait Sudoku : IndexMut<Position, Output=char> {
