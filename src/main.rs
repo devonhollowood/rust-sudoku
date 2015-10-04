@@ -1,4 +1,4 @@
-mod sudoku;
+pub mod sudoku;
 
 #[cfg(not(test))]
 fn main() {
