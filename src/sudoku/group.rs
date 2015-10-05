@@ -1,6 +1,7 @@
 /// Struct representing a row, column or box
 
 use std::slice::Iter;
+use std::iter::FromIterator;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Group<T> {
@@ -22,6 +23,12 @@ impl<'a, T: Clone> From<&'a [T]> for Group<T> {
     /// Creates a Group, which contains the elements in `elems`
     fn from(elems: &'a [T]) -> Group<T> {
         Group { elements: Vec::from(elems) }
+    }
+}
+
+impl<T> FromIterator<T> for Group<T> {
+    fn from_iter<I>(iterable: I) -> Self where I: IntoIterator<Item=T> {
+        Group { elements: iterable.into_iter().collect() }
     }
 }
 
