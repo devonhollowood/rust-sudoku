@@ -55,32 +55,23 @@ impl IndexMut<Position> for Dynamic {
 }
 
 impl Sudoku for Dynamic {
-    fn get_row(&self, pos: Position) -> Group<char> {
-        let begin = pos.row*self.ncols;
-        let end = (pos.row+1)*self.ncols;
-        Group::from(&self.data[begin..end])
+    fn row_positions(&self, pos: Position) -> Group<Position> {
+        (0..pos.col).chain(pos.col+1..self.ncols).map(|c| Position{row: pos.row, col: c}).collect()
     }
 
-    fn get_col(&self, pos: Position) -> Group<char>{
-        let mut elements = Vec::with_capacity(self.nrows);
-        for row in 0..self.nrows {
-            elements.push(self.data[row*self.ncols + pos.col]);
-        }
-        Group::from(&elements[..])
+    fn col_positions(&self, pos: Position) -> Group<Position>{
+        (0..pos.row).chain(pos.row+1..self.nrows).map(|r| Position{row: r, col: pos.col}).collect()
     }
 
-    fn get_box(&self, pos: Position) -> Group<char>{
-        let box_num = self.box_height*(pos.row/self.box_height) + (pos.col/self.box_width);
-        let boxes_per_row = self.ncols/self.box_width;
-        let top_left = (box_num/boxes_per_row)*self.box_height*self.ncols +
-                       (box_num%boxes_per_row)*self.box_width;
-        let mut elements = Vec::with_capacity(self.box_width*self.box_height);
-        for box_row in 0..self.box_height {
-            for box_col in 0..self.box_width {
-                elements.push(self.data[top_left + box_row*self.ncols + box_col]);
-            }
-        }
-        Group::from(&elements[..])
+    fn box_positions(&self, pos: Position) -> Group<Position>{
+        let top_left = Position {
+            row: (pos.row/self.box_height)*self.box_height,
+            col: (pos.col/self.box_width)*self.box_width,
+        };
+        (0..self.box_height)
+            .flat_map(|r| (0..self.box_width).map(move |c| (r, c)))
+            .map(|(r, c)| Position{ row: top_left.row + r, col: top_left.col + c })
+            .filter(|&p| p!=pos).collect()
     }
 
     fn allowed_characters(&self) -> &'static str {
@@ -93,11 +84,6 @@ impl Sudoku for Dynamic {
              _ => panic!("Unsupported puzzle size: {}x{}", self.nrows, self.nrows),
         }
     }
-
-    fn groups(&self, pos: Position) -> [Group<char>; 3] {
-        [self.get_row(pos), self.get_col(pos), self.get_box(pos)]
-    }
-
 }
 
 #[cfg(test)]
