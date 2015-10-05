@@ -5,19 +5,19 @@ use super::position::Position;
 /// Trait providing a generic interface for sudoku puzzles
 pub trait Sudoku : IndexMut<Position, Output=char> {
     /// The row in which `pos` lies
-    fn get_row(&self, pos: Position) -> Group;
+    fn get_row(&self, pos: Position) -> Group<char>;
 
     /// The col in which `pos` lies
-    fn get_col(&self, pos: Position) -> Group;
+    fn get_col(&self, pos: Position) -> Group<char>;
 
     /// The box in which `pos` lies
-    fn get_box(&self, pos: Position) -> Group;
+    fn get_box(&self, pos: Position) -> Group<char>;
 
     /// The allowed characters for the sudoku
     fn allowed_characters(&self) -> &'static str;
 
     /// The list of groups in which `pos` lies
-    fn groups(&self, pos: Position) -> [Group; 3] {
+    fn groups(&self, pos: Position) -> [Group<char>; 3] {
         [self.get_row(pos), self.get_col(pos), self.get_box(pos)]
     }
 

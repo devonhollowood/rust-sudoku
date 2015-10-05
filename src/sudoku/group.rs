@@ -1,19 +1,19 @@
 /// Struct representing a row, column or box
 #[derive(Clone, PartialEq, Eq, Debug)]
-pub struct Group {
-    elements: Vec<char>
+pub struct Group<T> {
+    elements: Vec<T>
 }
 
-impl Group {
+impl<T: PartialEq> Group<T> {
     /// Returns whether the Group contains a given character.
-    pub fn contains(&self, c: char) -> bool {
+    pub fn contains(&self, c: T) -> bool {
         self.elements.contains(&c)
     }
 }
 
-impl<'a> From<&'a [char]> for Group {
+impl<'a, T: Clone> From<&'a [T]> for Group<T> {
     /// Creates a Group, which contains the elements in `elems`
-    fn from(elems: &'a [char]) -> Group {
+    fn from(elems: &'a [T]) -> Group<T> {
         Group { elements: Vec::from(elems) }
     }
 }

@@ -55,13 +55,13 @@ impl IndexMut<Position> for Dynamic {
 }
 
 impl Sudoku for Dynamic {
-    fn get_row(&self, pos: Position) -> Group {
+    fn get_row(&self, pos: Position) -> Group<char> {
         let begin = pos.row*self.ncols;
         let end = (pos.row+1)*self.ncols;
         Group::from(&self.data[begin..end])
     }
 
-    fn get_col(&self, pos: Position) -> Group{
+    fn get_col(&self, pos: Position) -> Group<char>{
         let mut elements = Vec::with_capacity(self.nrows);
         for row in 0..self.nrows {
             elements.push(self.data[row*self.ncols + pos.col]);
@@ -69,7 +69,7 @@ impl Sudoku for Dynamic {
         Group::from(&elements[..])
     }
 
-    fn get_box(&self, pos: Position) -> Group{
+    fn get_box(&self, pos: Position) -> Group<char>{
         let box_num = self.box_height*(pos.row/self.box_height) + (pos.col/self.box_width);
         let boxes_per_row = self.ncols/self.box_width;
         let top_left = (box_num/boxes_per_row)*self.box_height*self.ncols +
@@ -94,7 +94,7 @@ impl Sudoku for Dynamic {
         }
     }
 
-    fn groups(&self, pos: Position) -> [Group; 3] {
+    fn groups(&self, pos: Position) -> [Group<char>; 3] {
         [self.get_row(pos), self.get_col(pos), self.get_box(pos)]
     }
 
